@@ -61,6 +61,9 @@ onMounted(() => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* 减少左右边距 */
+  padding-left: 10px;  /* 原来可能是 20px 或更多 */
+  padding-right: 10px;
 }
 
 .content {
