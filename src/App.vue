@@ -44,8 +44,21 @@ onMounted(() => {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-  padding-bottom: 60px; /* 为底部导航留出空间 */
+  margin-top: 10px;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  /* 确保内容不会超出视口 */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* 添加视口设置 */
+@supports (padding: max(0px)) {
+  #app {
+    /* 使用 max 确保至少有 20px 的底部边距 */
+    padding-bottom: max(env(safe-area-inset-bottom, 20px), 20px);
+  }
 }
 
 .content {

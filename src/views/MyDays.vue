@@ -25,7 +25,14 @@ const nowDate = computed(() => {
 
 <style>
 .logo {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 </style>
