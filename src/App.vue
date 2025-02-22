@@ -29,12 +29,25 @@ import Yours from './views/YoursPlan.vue'  // 注意文件名是否正确
 // 修改为字符串形式的组件名
 const currentTab = ref('MyDays')
 
+// 检测微信浏览器函数
+const isWechat = () => {
+  return /MicroMessenger/i.test(navigator.userAgent);
+}
+
 onMounted(() => {
+    // 设置 viewport
     const viewportMeta = document.createElement('meta')
     viewportMeta.name = 'viewport'
     viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
     document.head.appendChild(viewportMeta)
+
+    // 检测并添加微信浏览器类名
+    if (isWechat()) {
+      document.body.classList.add('is-wechat')
+    }
 })
+
+
 </script>
 
 <style>
@@ -101,17 +114,12 @@ onMounted(() => {
 }
 
 
-/* 针对微信浏览器的适配 */
-@media screen and (min-width: 300px) {
-  /* 检测是否在微信浏览器中 */
-  @supports (-webkit-overflow-scrolling: touch) {
-    .content {
-      margin-bottom: calc(60px + 20px);  /* 微信浏览器固定添加 20px 安全距离 */
-    }
+/* 只针对微信浏览器 */
+.is-wechat .content {
+  margin-bottom: calc(60px + 20px) !important;  /* 使用 !important 确保覆盖其他样式 */
+}
 
-    .tab-bar {
-      padding-bottom: 20px;  /* 微信浏览器固定添加 20px 安全距离 */
-    }
-  }
+.is-wechat .tab-bar {
+  padding-bottom: 20px !important;
 }
 </style>
