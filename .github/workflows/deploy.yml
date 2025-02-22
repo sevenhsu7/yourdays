@@ -25,9 +25,13 @@ jobs:
 
     - name: Build
       run: yarn build
+      env:
+        NODE_ENV: production
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
+        force_orphan: true
+        clean: true
