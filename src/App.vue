@@ -45,29 +45,18 @@ onMounted(() => {
   text-align: center;
   color: #2c3e50;
   margin-top: 10px;
-  padding-bottom: env(safe-area-inset-bottom, 20px);
-  /* 确保内容不会超出视口 */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-
-/* 添加视口设置 */
-@supports (padding: max(0px)) {
-  #app {
-    /* 使用 max 确保至少有 20px 的底部边距 */
-    padding-bottom: max(env(safe-area-inset-bottom, 20px), 20px);
-  }
-}
-
 .content {
-  margin-bottom: 50px;
+  margin-bottom: 60px;  /* 默认边距 */
 }
 
 .tab-bar {
   position: fixed;
-  bottom: 0;
+  bottom: 0;  /* 默认位置 */
   left: 0;
   right: 0;
   height: 50px;
@@ -87,5 +76,27 @@ onMounted(() => {
 .tab-item.active {
   color: #42b983;
   font-weight: bold;
+}
+
+/* 1. 首先检查浏览器是否支持安全区域特性 */
+@supports (padding: env(safe-area-inset-bottom)) {
+  
+  /* 2. 然后检查是否是触摸屏设备 */
+  @media (hover: none) and (pointer: coarse) {
+    
+    /* 3. 调整内容区域的底部边距 */
+    .content {
+      margin-bottom: calc(60px + env(safe-area-inset-bottom));
+      /* 60px 是基础间距
+         env(safe-area-inset-bottom) 是设备底部安全区域的高度
+         在 iPhone X 及以上机型约为 34px */
+    }
+
+    /* 4. 调整标签栏的底部内边距 */
+    .tab-bar {
+      padding-bottom: env(safe-area-inset-bottom);
+      /* 给标签栏添加底部内边距，避免与 iPhone 的 Home Indicator 重叠 */
+    }
+  }
 }
 </style>
