@@ -99,4 +99,19 @@ onMounted(() => {
     }
   }
 }
+
+
+/* 针对微信浏览器的适配 */
+@media screen and (min-width: 300px) {
+  /* 检测是否在微信浏览器中 */
+  @supports (-webkit-overflow-scrolling: touch) {
+    .content {
+      margin-bottom: calc(60px + 20px);  /* 微信浏览器固定添加 20px 安全距离 */
+    }
+
+    .tab-bar {
+      padding-bottom: 20px;  /* 微信浏览器固定添加 20px 安全距离 */
+    }
+  }
+}
 </style>
