@@ -131,9 +131,13 @@ export default {
 
         // 8. 新增计算属性
         const isExpired = computed(() => {
-            const now = new Date().getTime()
-            const deadline = new Date(props.item.deadline).getTime()
-            return now > deadline
+            const now = new Date()
+            const deadline = new Date(props.item.deadline)
+            
+            // 设置 deadline 为当天的最后一刻 (23:59:59.999)
+            deadline.setHours(23, 59, 59, 999)
+            
+            return now.getTime() > deadline.getTime()
         })
 
         const isLastDay = computed(() => {
@@ -162,7 +166,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../styles/progress-vue.scss';
+@import "../styles/progress-vue.css";
 
 /* 只保留需要特别覆盖的样式 */
 .progress-wrapper {

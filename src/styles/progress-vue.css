@@ -16,8 +16,6 @@
 /* 激活状态 */
 .progress-wrapper.active {
   background-color: #f8f8f8;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   border: 1px solid #e0e0e0;
 }
 
@@ -44,7 +42,7 @@
 }
 
 
-// 操作按钮容器
+/* 操作按钮容器 */
 .action-buttons {
   position: absolute;
   left: 0;
@@ -58,20 +56,20 @@
   transition: all 0.3s ease;
   pointer-events: none;
   z-index: 1;
-
-  &.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
 }
 
-// 强调文本样式
+.action-buttons.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* 强调文本样式 */
 strong {
   font-weight: bold;
 }
 
-// 进度条文本样式
+/* 进度条文本样式 */
 .inside-text, .outside-text {
   font-size: 16px;
   font-weight: bold;
@@ -83,24 +81,24 @@ strong {
   gap: 10px;
   margin-bottom: 10px;
   width: 100%;
-  
-  h2 {
-    margin: 0;
-    max-width: 40%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  
-  p {
-    margin: 0;
-    padding-bottom: 2px;
-    flex: 0 1 auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+}
+
+.head-container h2 {
+  margin: 0;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.head-container p {
+  margin: 0;
+  padding-bottom: 2px;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .progress-container {
