@@ -1,20 +1,20 @@
 <template>
   <div class="content">
-    <component :is="currentTab === 'MyDays' ? MyDays : Yours" />
+    <router-view></router-view>
   </div>
   
   <div class="tab-bar">
     <div 
       class="tab-item" 
-      :class="{ active: currentTab === 'MyDays' }"
-      @click="currentTab = 'MyDays'"
+      :class="{ active: currentRoute === 'MyDays' }"
+      @click="navigateTo('mydays')"
     >
       MyDays
     </div>
     <div 
       class="tab-item" 
-      :class="{ active: currentTab === 'Yours' }"
-      @click="currentTab = 'Yours'"
+      :class="{ active: currentRoute === 'Yours' }"
+      @click="navigateTo('yours')"
     >
       Yours
     </div>
@@ -22,16 +22,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import MyDays from './views/MyDays.vue'
-import Yours from './views/YoursPlan.vue'  // 注意文件名是否正确
+import {  computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-// 修改为字符串形式的组件名
-const currentTab = ref('MyDays')
+const router = useRouter()
+const route = useRoute()
+
+// 使用计算属性来确定当前路由
+const currentRoute = computed(() => {
+  if (route.path === '/mydays') return 'MyDays'
+  if (route.path === '/yours') return 'Yours'
+  return ''
+})
+
+// 导航函数
+const navigateTo = (path) => {
+  router.push(`/${path}`)
+}
 
 // 检测微信浏览器函数
 const isWechat = () => {
-  return /MicroMessenger/i.test(navigator.userAgent);
+  return /MicroMessenger/i.test(navigator.userAgent)
 }
 
 onMounted(() => {
@@ -46,8 +57,6 @@ onMounted(() => {
       document.body.classList.add('is-wechat')
     }
 })
-
-
 </script>
 
 <style>
