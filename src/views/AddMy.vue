@@ -1,5 +1,15 @@
 <template>
     <div class="add-task">
+        <!-- 确认弹窗 -->
+        <div v-if="showErrorDialog" class="confirm-dialog">
+            <div class="dialog-content">
+                <p>开始时间不能晚于截止时间</p>
+                <div class="dialog-buttons">
+                    <button @click="closeErrorDialog" class="btn-confirm">确定</button>
+                </div>
+            </div>
+        </div>
+
         <h2>{{ route.query.mode === 'edit' ? '编辑任务' : '新建任务' }}</h2>
         <form @submit.prevent="submitTask">
         <div class="form-group">
@@ -67,6 +77,9 @@ const taskForm = ref({
     type: 'task'
 })
 
+// 添加新的响应式变量
+const showErrorDialog = ref(false)
+
 // 检查是否是编辑模式
 onMounted(() => {
     if (route.query.mode === 'edit') {
@@ -98,6 +111,14 @@ const saveGoals = (goals) => {
 }
 
 const submitTask = () => {
+    const startDate = new Date(taskForm.value.startDate)
+    const deadline = new Date(taskForm.value.deadline)
+    
+    if (startDate > deadline) {
+        showErrorDialog.value = true
+        return
+    }
+    
     const goals = loadGoals()
     
     if (route.query.mode === 'edit') {
@@ -108,6 +129,20 @@ const submitTask = () => {
                 ...goals[index],
                 ...taskForm.value,
                 updatedAt: new Date().toISOString()
+            }
+            
+            // 同步更新 MyDays 中的数据
+            const myDaysItems = localStorage.getItem('myDaysItems') || '[]'
+            let items = JSON.parse(myDaysItems)
+            const myDaysIndex = items.findIndex(i => i.id === taskForm.value.id)
+            
+            if (myDaysIndex !== -1) {
+                items[myDaysIndex] = {
+                    ...items[myDaysIndex],
+                    ...taskForm.value,
+                    updatedAt: new Date().toISOString()
+                }
+                localStorage.setItem('myDaysItems', JSON.stringify(items))
             }
         }
     } else {
@@ -128,6 +163,11 @@ const submitTask = () => {
 
 const cancel = () => {
     router.back()
+}
+
+// 添加关闭弹窗的方法
+const closeErrorDialog = () => {
+    showErrorDialog.value = false
 }
 </script>
 
@@ -175,5 +215,48 @@ button {
 .btn-submit {
     background-color: #42b983;
     color: white;
+}
+
+/* 添加弹窗样式 */
+.confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 300px;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-confirm {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #42b983;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-confirm:hover {
+    background-color: #3aa876;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="yours-plan">
-        <h1>Your Days</h1>
+        <h1>Your Big Days</h1>
 
         <!-- 确认删除对话框 -->
         <div v-if="showConfirmDialog" class="confirm-dialog">
@@ -15,7 +15,11 @@
 
         <!-- 任务列表 -->
         <div class="goals-list">
+            <div v-if="goals.length === 0" class="empty-state">
+                快来添加你的大日子
+            </div>
             <progress-wrapper
+                v-else
                 v-for="goal in goals"
                 :key="goal.id"
                 :item="goal"
@@ -23,6 +27,13 @@
                 @toggle="toggleGoal(goal.id)"
             >
                 <template #actions>
+                    <button 
+                        class="action-btn"
+                        :class="isAddedToMyDays(goal) ? 'remove-from-mydays-btn' : 'add-to-mydays-btn'"
+                        @click.stop="toggleMyDays(goal)"
+                    >
+                        {{ isAddedToMyDays(goal) ? '取消添加' : '加到我的好日子' }}
+                    </button>
                     <button 
                         class="action-btn edit-btn" 
                         @click.stop="editGoal(goal)"
@@ -57,6 +68,8 @@ const goals = ref([])
 const selectedGoalId = ref(null)
 const showConfirmDialog = ref(false)
 const goalToDelete = ref(null)
+// 添加一个响应式的状态来追踪MyDays项目
+const myDaysItemIds = ref(new Set())
 
 // 保存到本地存储
 const saveGoals = () => {
@@ -139,8 +152,39 @@ const handleClickOutside = (event) => {
     }
 }
 
+// 初始化MyDays项目ID集合
+const initMyDaysItems = () => {
+    const myDaysItems = localStorage.getItem('myDaysItems') || '[]'
+    const items = JSON.parse(myDaysItems)
+    myDaysItemIds.value = new Set(items.map(item => item.id))
+}
+
+// 检查是否已添加到MyDays
+const isAddedToMyDays = (goal) => {
+    return myDaysItemIds.value.has(goal.id)
+}
+
+// 切换MyDays状态
+const toggleMyDays = (goal) => {
+    const myDaysItems = localStorage.getItem('myDaysItems') || '[]'
+    let items = JSON.parse(myDaysItems)
+    
+    if (isAddedToMyDays(goal)) {
+        // 如果已添加，则移除
+        items = items.filter(item => item.id !== goal.id)
+        myDaysItemIds.value.delete(goal.id)
+    } else {
+        // 如果未添加，则添加
+        items.push({...goal, addedFromYours: true})
+        myDaysItemIds.value.add(goal.id)
+    }
+    
+    localStorage.setItem('myDaysItems', JSON.stringify(items))
+}
+
 onMounted(() => {
     loadGoals()
+    initMyDaysItems()
     document.addEventListener('click', handleClickOutside)
 })
 
@@ -264,6 +308,24 @@ onUnmounted(() => {
 }
 
 .delete-btn:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+.add-to-mydays-btn {
+    border-color: #1e88e5;
+    color: #1e88e5;
+}
+
+.add-to-mydays-btn:hover {
+    background-color: rgba(30, 136, 229, 0.1);
+}
+
+.remove-from-mydays-btn {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.remove-from-mydays-btn:hover {
     background-color: rgba(255, 68, 68, 0.1);
 }
 
