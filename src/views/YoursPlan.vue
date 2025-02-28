@@ -16,7 +16,7 @@
         <!-- 任务列表 -->
         <div class="goals-list">
             <div v-if="goals.length === 0" class="empty-state">
-                快来添加你的大日子
+                👏🏻 快来添加你的大日子
             </div>
             <progress-wrapper
                 v-else
@@ -198,6 +198,15 @@ onUnmounted(() => {
 .yours-plan {
     padding: 20px;
     padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 200px);  /* 减去头部和底部的空间 */
+    font-size: 18px;
+    color: #666;
 }
 
 .goals-list {
