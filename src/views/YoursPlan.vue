@@ -22,7 +22,7 @@
                 v-else
                 v-for="goal in goals"
                 :key="goal.id"
-                :item="goal"
+                :item="{ ...goal, addedFromYours: isAddedToMyDays(goal), fromYoursPlan: true }"
                 :is-active="selectedGoalId === goal.id"
                 @toggle="toggleGoal(goal.id)"
             >
@@ -32,7 +32,7 @@
                         :class="isAddedToMyDays(goal) ? 'remove-from-mydays-btn' : 'add-to-mydays-btn'"
                         @click.stop="toggleMyDays(goal)"
                     >
-                        {{ isAddedToMyDays(goal) ? '取消添加' : '加到我的好日子' }}
+                        {{ isAddedToMyDays(goal) ? '取消添加' : '添加好日子' }}
                     </button>
                     <button 
                         class="action-btn edit-btn" 
@@ -80,7 +80,8 @@ const saveGoals = () => {
 const loadGoals = () => {
     const savedGoals = localStorage.getItem('goals')
     if (savedGoals) {
-        goals.value = JSON.parse(savedGoals)
+        // 解析后按 id 降序排序（因为新任务的 id 会更大）
+        goals.value = JSON.parse(savedGoals).sort((a, b) => b.id - a.id)
     }
 }
 
@@ -329,15 +330,6 @@ onUnmounted(() => {
     background-color: rgba(255, 68, 68, 0.1);
 }
 
-.progress-wrapper {
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
 .progress-wrapper.active {
     background-color: rgba(0, 0, 0, 0.05);

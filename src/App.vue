@@ -9,14 +9,14 @@
       :class="{ active: currentRoute === 'MyDays' }"
       @click="navigateTo('mydays')"
     >
-      MyDays
+      好日子
     </div>
     <div 
       class="tab-item" 
       :class="{ active: currentRoute === 'Yours' }"
       @click="navigateTo('yours')"
     >
-      Yours
+      我的
     </div>
   </div>
 </template>
@@ -91,6 +91,7 @@ onMounted(() => {
   display: flex;
   background-color: #fff;
   border-top: 1px solid #eee;
+  z-index: 9999;  /* 添加最高层级 */
 }
 
 .tab-item {

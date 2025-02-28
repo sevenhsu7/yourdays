@@ -5,8 +5,12 @@
             'active': isActive,
             'has-actions': hasActions
         }"
+        :data-preset="item.id < 0"
         @click="$emit('toggle')"
     >
+        <!-- 只在 YoursPlan 中显示皇冠标记 -->
+        <span v-if="item.addedFromYours && !item.fromYoursPlan" class="crown-mark">👑</span>
+        
         <div class="head-container">
             <h2>{{ item.title }}</h2>
             <!-- 根据类型显示不同的描述 -->
@@ -15,7 +19,12 @@
             </p>
             <p v-else>
                 <template v-if="!isExpired && progress < 66.7">
-                    {{ periodText }}已经过了<strong>{{ passedDays }}</strong>天
+                    <template v-if="isFirstDay">
+                        {{ periodText }}的第<strong>1</strong>天
+                    </template>
+                    <template v-else>
+                        {{ periodText }}已经过了<strong>{{ passedDays }}</strong>天
+                    </template>
                 </template>
                 <template v-else>
                     <template v-if="isExpired">
@@ -151,6 +160,16 @@ export default {
                     now.getDate() === deadline.getDate()
         })
 
+        const isFirstDay = computed(() => {
+            const now = new Date()
+            const startDate = new Date(props.item.startDate)
+            
+            // 判断是否是同一天
+            return now.getFullYear() === startDate.getFullYear() &&
+                    now.getMonth() === startDate.getMonth() &&
+                    now.getDate() === startDate.getDate()
+        })
+
         return {
             formatDate,
             periodText,
@@ -160,7 +179,8 @@ export default {
             progress,
             hasActions,
             isExpired,
-            isLastDay
+            isLastDay,
+            isFirstDay
         }
     }
 }
@@ -169,58 +189,17 @@ export default {
 <style scoped>
 @import "../styles/progress-vue.css";
 
-/* 只保留需要特别覆盖的样式 */
 .progress-wrapper {
-    margin: 15px 0; /* 覆盖 margin，使其只有上下间距 */
+    position: relative;  /* 确保相对定位 */
 }
 
-/* 描述容器和其他特定样式保持不变 */
-.description-container {
-    margin: 10px 0;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
-    text-align: left;
-}
-
-.description-text {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-    line-height: 1.4;
-    text-align: left;
-    padding-left: 0;
-}
-
-/* 操作按钮容器样式 */
-.action-buttons {
+.crown-mark {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -35px; /* 调整按钮位置 */
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-    pointer-events: none;
-    z-index: 1; /* 确保按钮在上层 */
-}
-
-.action-buttons.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-/* 强调文本样式 */
-strong {
-    font-weight: bold;
-}
-
-/* 覆盖进度条文本样式以匹配 QuarterProgress */
-.inside-text, .outside-text {
-    font-size: 16px;
-    font-weight: bold;
+    top: -5px;
+    right: -5px;
+    font-size: 20px;
+    transform: rotate(15deg);
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    z-index: 999;
 }
 </style>
