@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 export default {
     props: {
         item: {
@@ -69,7 +70,7 @@ export default {
         }
     },
     setup(props, { slots }) {
-        const { computed } = require('vue')
+        console.log('ProgressWrapper props:', props)
 
         // 1. 基础工具函数
         const formatDate = (dateString) => {

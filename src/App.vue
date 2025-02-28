@@ -37,6 +37,7 @@ const currentRoute = computed(() => {
 
 // 导航函数
 const navigateTo = (path) => {
+  console.log('Navigating to:', path)  // 添加日志
   router.push(`/${path}`)
 }
 
@@ -45,7 +46,12 @@ const isWechat = () => {
   return /MicroMessenger/i.test(navigator.userAgent)
 }
 
+// 添加路由变化监听
 onMounted(() => {
+  router.beforeEach((to, from) => {
+    console.log('Route change:', { from: from.path, to: to.path })
+  })
+
     // 设置 viewport
     const viewportMeta = document.createElement('meta')
     viewportMeta.name = 'viewport'
