@@ -46,8 +46,13 @@ const isWechat = () => {
   return /MicroMessenger/i.test(navigator.userAgent)
 }
 
-// 添加路由变化监听
+// 添加初始重定向逻辑
 onMounted(() => {
+  // 如果当前在根路径，重定向到 mydays
+  if (route.path === '/') {
+    router.push('/mydays')
+  }
+
   router.beforeEach((to, from) => {
     console.log('Route change:', { from: from.path, to: to.path })
   })
